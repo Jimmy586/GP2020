@@ -21,9 +21,6 @@ class User(db.Model):
         self.u_name = u_name
         self.u_password = u_password
         
-    def __repr__(self):
-        return '<id {}>'.format(self.u_id)
-        
     def serialize(self):
         return {
             'id': self.u_id,
@@ -32,6 +29,46 @@ class User(db.Model):
         }
         
 class UserSchema(ma.Schema):
-    u_id = fields.Integer()
+    u_id = fields.Integer(required=True)
     u_name = fields.String(required=True)
     u_password = fields.String(required=True)
+    
+    
+class Car(db.Model):
+    __tablename__ = 'car'
+    
+    c_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(45))
+    mpg = db.Column(db.Numeric)
+    cylinder = db.Column(db.Integer)
+    displacement= db.Column(db.Numeric)
+    horsepower = db.Column(db.Integer)
+    weight = db.Column(db.Numeric)
+    acceleration = db.Column(db.Numeric)
+    u_id = db.Column(db.Integer, db.ForeignKey('user.u_id',
+                                               ondelete = 'SET NULL',
+                                               onupdate = 'CASCADE'))
+    
+    def __init__(self, c_id, name, mpg, cylinder, displacement, horsepower,
+                 weight, acceleration, u_id):
+        self.c_id = c_id
+        self.acceleration = acceleration
+        self.cylinder = cylinder
+        self.displacement = displacement
+        self.horsepower = horsepower
+        self.mpg = mpg
+        self.name = name
+        self.u_id = u_id
+        self.weight = weight
+        
+    
+class CarSchema(ma.Schema):
+    c_id = fields.Integer()
+    name = fields.String()
+    acceleration = fields.Float()
+    cylinder = fields.Integer()
+    displacement = fields.Float()
+    horsepower = fields.Integer()
+    mpg = fields.Float()
+    u_id = fields.Integer()
+    weight = fields.Float()

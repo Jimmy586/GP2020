@@ -20,7 +20,7 @@ class UserResource(Resource):
         if not data:
             return {'message': 'User does not exist'}, 400
         else:
-            user = User.serialize(data)
+            user = user_schema.dump(data).data
             return {'status': 'success', 'data': user}, 200    
     
     def post(self):
@@ -31,8 +31,10 @@ class UserResource(Resource):
         user = User.query.filter_by(u_name = args_data['name']).first()
         if user:
             return {'message': 'User already exists'}, 400
+        
+        users = User.query.all()
         user = User(
-                u_id =  args_data['id'],
+                u_id =  len(users) + 1,
                 u_name = args_data['name'],
                 u_password = args_data['password']
         )
